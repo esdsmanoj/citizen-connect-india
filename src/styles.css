@@ -122,3 +122,36 @@
   border-color: var(--color-primary);
   background: color-mix(in oklab, var(--color-primary) 8%, transparent);
 }
+
+/* Subtle ambient animations for hero background decor */
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -10px, 0); }
+}
+@keyframes float-slower {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(6px, 8px, 0); }
+}
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: .9; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(var(--sway-from, 8deg)); }
+  50%      { transform: rotate(var(--sway-to, -8deg)); }
+}
+@keyframes river-drift {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-40px, 0, 0); }
+}
+
+.anim-float       { animation: float-slow 9s ease-in-out infinite; will-change: transform; }
+.anim-float-alt   { animation: float-slower 12s ease-in-out infinite; will-change: transform; }
+.anim-orb         { animation: orb-pulse 10s ease-in-out infinite; will-change: transform, opacity; transform-origin: center; }
+.anim-sway        { animation: sway 7s ease-in-out infinite; transform-origin: 50% 90%; will-change: transform; }
+.anim-river       { animation: river-drift 14s linear infinite; will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-float, .anim-float-alt, .anim-orb, .anim-sway, .anim-river { animation: none; }
+}
+
