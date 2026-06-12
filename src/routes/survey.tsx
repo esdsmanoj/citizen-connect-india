@@ -64,19 +64,21 @@ function SurveyPage() {
   const q = questions[idx];
   if (!q) return null;
   const progress = ((idx + 1) / total) * 100;
-  const current: AnswerValue = draft.answers[q.id] ?? { updatedAt: new Date().toISOString() };
+  const current: AnswerValue = answers[q.id] ?? { updatedAt: new Date().toISOString() };
 
   const updateAnswer = (patch: Partial<AnswerValue>) => {
-    const next: AnswerValue = { ...current, ...patch, updatedAt: new Date().toISOString() };
-    const fresh = loadDraft() ?? draft;
-    fresh.answers = { ...fresh.answers, [q.id]: next };
+    const nextAns: AnswerValue = { ...current, ...patch, updatedAt: new Date().toISOString() };
+    const nextAnswers = { ...answers, [q.id]: nextAns };
+    setAnswers(nextAnswers);
+    const fresh = loadDraft() ?? initialDraft;
+    fresh.answers = nextAnswers;
     fresh.currentIndex = idx;
     saveDraft(fresh);
   };
 
   const canAdvance = () => {
     if (!q.is_required) return true;
-    const a = (loadDraft()?.answers || {})[q.id];
+    const a = answers[q.id];
     if (!a) return false;
     if (q.question_type === "single") return !!a.selectedOptionId;
     if (q.question_type === "rating") return !!a.rating && a.rating > 0;
@@ -88,7 +90,7 @@ function SurveyPage() {
     if (!canAdvance()) return;
     if (idx + 1 < total) {
       setIdx(idx + 1);
-      const fresh = loadDraft() ?? draft;
+      const fresh = loadDraft() ?? initialDraft;
       fresh.currentIndex = idx + 1;
       saveDraft(fresh);
     } else {
