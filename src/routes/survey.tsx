@@ -31,9 +31,10 @@ type Question = {
 
 function SurveyPage() {
   const navigate = useNavigate();
-  const draft = useMemo(() => loadDraft() ?? emptyDraft(), []);
-  const lang = draft.language;
-  const [idx, setIdx] = useState(draft.currentIndex || 0);
+  const initialDraft = useMemo(() => loadDraft() ?? emptyDraft(), []);
+  const lang = initialDraft.language;
+  const [idx, setIdx] = useState(initialDraft.currentIndex || 0);
+  const [answers, setAnswers] = useState<Record<string, AnswerValue>>(initialDraft.answers || {});
 
   const { data: questions, isLoading } = useQuery({
     queryKey: ["questions", SURVEY_ID],
