@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Star } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
@@ -225,6 +225,3 @@ function SurveyPage() {
 function ratingLabel(n: number) {
   return ["Tap a star to rate", "Very Poor", "Poor", "Average", "Good", "Excellent"][n] || "";
 }
-
-// Re-export to satisfy unused import
-export { Link };
