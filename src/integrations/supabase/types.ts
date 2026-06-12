@@ -14,7 +14,254 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      citizens: {
+        Row: {
+          age: number | null
+          created_at: string
+          district: string | null
+          gender: string | null
+          id: string
+          mobile: string
+          name: string
+          profession: string | null
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          district?: string | null
+          gender?: string | null
+          id?: string
+          mobile: string
+          name: string
+          profession?: string | null
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          district?: string | null
+          gender?: string | null
+          id?: string
+          mobile?: string
+          name?: string
+          profession?: string | null
+        }
+        Relationships: []
+      }
+      question_options: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_other: boolean
+          label: Json
+          option_code: string
+          question_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order: number
+          id?: string
+          is_other?: boolean
+          label: Json
+          option_code: string
+          question_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_other?: boolean
+          label?: Json
+          option_code?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          allow_comment: boolean
+          allow_other: boolean
+          created_at: string
+          display_order: number
+          id: string
+          is_required: boolean
+          question_type: string
+          survey_id: string
+          text: Json
+        }
+        Insert: {
+          allow_comment?: boolean
+          allow_other?: boolean
+          created_at?: string
+          display_order: number
+          id?: string
+          is_required?: boolean
+          question_type?: string
+          survey_id: string
+          text: Json
+        }
+        Update: {
+          allow_comment?: boolean
+          allow_other?: boolean
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_required?: boolean
+          question_type?: string
+          survey_id?: string
+          text?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_answers: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          other_text: string | null
+          question_id: string
+          rating_value: number | null
+          response_id: string
+          selected_option_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          other_text?: string | null
+          question_id: string
+          rating_value?: number | null
+          response_id: string
+          selected_option_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          other_text?: string | null
+          question_id?: string
+          rating_value?: number | null
+          response_id?: string
+          selected_option_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_answers_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "survey_responses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_answers_selected_option_id_fkey"
+            columns: ["selected_option_id"]
+            isOneToOne: false
+            referencedRelation: "question_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_responses: {
+        Row: {
+          citizen_id: string
+          id: string
+          idempotency_key: string | null
+          mobile: string
+          response_code: string
+          selected_language: string
+          submitted_at: string
+          survey_id: string
+        }
+        Insert: {
+          citizen_id: string
+          id?: string
+          idempotency_key?: string | null
+          mobile: string
+          response_code: string
+          selected_language?: string
+          submitted_at?: string
+          survey_id: string
+        }
+        Update: {
+          citizen_id?: string
+          id?: string
+          idempotency_key?: string | null
+          mobile?: string
+          response_code?: string
+          selected_language?: string
+          submitted_at?: string
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_citizen_id_fkey"
+            columns: ["citizen_id"]
+            isOneToOne: false
+            referencedRelation: "citizens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surveys: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          status: string
+          subtitle: string | null
+          supported_languages: string[]
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          status?: string
+          subtitle?: string | null
+          supported_languages?: string[]
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          status?: string
+          subtitle?: string | null
+          supported_languages?: string[]
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
