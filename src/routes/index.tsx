@@ -132,13 +132,16 @@ function BackgroundDecor() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* Soft saffron orb */}
-      <div className="absolute -top-24 -right-20 h-72 w-72 rounded-full bg-saffron/20 blur-3xl" />
+      <div className="anim-orb absolute -top-24 -right-20 h-72 w-72 rounded-full bg-saffron/20 blur-3xl" />
       {/* Soft primary orb */}
-      <div className="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-primary/15 blur-3xl" />
+      <div
+        className="anim-orb absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-primary/15 blur-3xl"
+        style={{ animationDelay: "-4s" }}
+      />
 
       {/* Stylized Assam state silhouette — top right, very subtle */}
       <svg
-        className="absolute -top-6 -right-6 h-56 w-56 text-primary/10"
+        className="anim-float absolute -top-6 -right-6 h-56 w-56 text-primary/10"
         viewBox="0 0 200 120"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +152,8 @@ function BackgroundDecor() {
 
       {/* Brahmaputra river — flowing wave lines bottom */}
       <svg
-        className="absolute bottom-0 left-0 w-full h-40 text-primary/10"
+        className="anim-river absolute bottom-0 -left-10 h-40 text-primary/10"
+        style={{ width: "calc(100% + 80px)" }}
         viewBox="0 0 400 160"
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +166,8 @@ function BackgroundDecor() {
 
       {/* Tea-leaf motifs — celebrating Assam's tea heritage */}
       <svg
-        className="absolute top-1/3 -left-4 h-16 w-16 text-success/30 rotate-12"
+        className="anim-sway absolute top-1/3 -left-4 h-16 w-16 text-success/30"
+        style={{ ["--sway-from" as any]: "14deg", ["--sway-to" as any]: "2deg" }}
         viewBox="0 0 32 32"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +177,8 @@ function BackgroundDecor() {
         <path d="M16 6 L 16 28" stroke="white" strokeWidth="0.5" />
       </svg>
       <svg
-        className="absolute top-20 right-8 h-10 w-10 text-saffron/30 -rotate-12"
+        className="anim-sway absolute top-20 right-8 h-10 w-10 text-saffron/30"
+        style={{ ["--sway-from" as any]: "-14deg", ["--sway-to" as any]: "-2deg", animationDelay: "-3s" }}
         viewBox="0 0 32 32"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +189,7 @@ function BackgroundDecor() {
 
       {/* Dotted pattern */}
       <svg
-        className="absolute top-10 left-6 h-20 w-20 text-primary/15"
+        className="anim-float-alt absolute top-10 left-6 h-20 w-20 text-primary/15"
         viewBox="0 0 80 80"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
@@ -196,5 +202,6 @@ function BackgroundDecor() {
         <rect width="80" height="80" fill="url(#dots)" />
       </svg>
     </div>
+
   );
 }
