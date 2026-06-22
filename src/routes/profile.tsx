@@ -17,6 +17,7 @@ function ProfilePage() {
   const [p, setP] = useState<CitizenProfile>({
     name: "", mobile: "", age: "", gender: "", district: "", profession: "",
   });
+  const [errors, setErrors] = useState<Partial<Record<keyof CitizenProfile, string>>>({});
 
   useEffect(() => {
     const d = loadDraft();
@@ -31,15 +32,28 @@ function ProfilePage() {
       saveDraft(draft);
       return next;
     });
+    setErrors((e) => ({ ...e, [k]: undefined }));
+  };
+
+  const validate = (): Partial<Record<keyof CitizenProfile, string>> => {
+    const e: Partial<Record<keyof CitizenProfile, string>> = {};
+    if (!p.name.trim()) e.name = "Please enter your name";
+    if (!/^[6-9]\d{9}$/.test(p.mobile))
+      e.mobile = "Enter a valid 10-digit Indian mobile (starting 6-9)";
+    if (!p.age || +p.age < 13 || +p.age > 120) e.age = "Enter a valid age (13–120)";
+    if (!p.gender) e.gender = "Please select your gender";
+    if (!p.district) e.district = "Please select your district";
+    if (!p.profession) e.profession = "Please select your profession";
+    return e;
   };
 
   const submit = () => {
-    if (!p.name.trim()) return toast.error("Please enter your name");
-    if (!/^[6-9]\d{9}$/.test(p.mobile)) return toast.error("Enter a valid 10-digit Indian mobile number");
-    if (!p.age || +p.age < 13 || +p.age > 120) return toast.error("Enter a valid age");
-    if (!p.gender) return toast.error("Please select your gender");
-    if (!p.district) return toast.error("Please select your district");
-    if (!p.profession) return toast.error("Please select your profession");
+    const e = validate();
+    setErrors(e);
+    if (Object.keys(e).length > 0) {
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     navigate({ to: "/intro" });
   };
 
@@ -55,10 +69,10 @@ function ProfilePage() {
 
       <main className="app-body px-4 py-4">
         <div className="mx-auto max-w-md space-y-3.5">
-          <Field label="Full Name" required>
+          <Field label="Full Name" required error={errors.name}>
             <Input value={p.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. Rajesh Sharma" />
           </Field>
-          <Field label="Mobile Number" required>
+          <Field label="Mobile Number" required error={errors.mobile}>
             <div className="flex gap-2">
               <span className="inline-flex items-center rounded-md border bg-muted px-3 text-sm text-muted-foreground">+91</span>
               <Input
@@ -71,17 +85,17 @@ function ProfilePage() {
             </div>
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Age" required>
+            <Field label="Age" required error={errors.age}>
               <Input inputMode="numeric" maxLength={3} value={p.age} onChange={(e) => update("age", e.target.value.replace(/\D/g, ""))} />
             </Field>
-            <Field label="Gender" required>
+            <Field label="Gender" required error={errors.gender}>
               <Select value={p.gender} onChange={(v) => update("gender", v)} options={GENDERS} placeholder="Select" />
             </Field>
           </div>
-          <Field label="District" required>
+          <Field label="District" required error={errors.district}>
             <Select value={p.district} onChange={(v) => update("district", v)} options={DISTRICTS} placeholder="Select district" />
           </Field>
-          <Field label="Profession" required>
+          <Field label="Profession" required error={errors.profession}>
             <Select value={p.profession} onChange={(v) => update("profession", v)} options={PROFESSIONS} placeholder="Select profession" />
           </Field>
         </div>
@@ -96,13 +110,14 @@ function ProfilePage() {
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
       <Label className="text-sm font-medium">
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
       {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
