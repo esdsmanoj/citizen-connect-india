@@ -66,35 +66,38 @@ function ReviewPage() {
 
     setSubmitting(true);
     try {
+      // Client-generated IDs so we don't need SELECT-after-insert
+      // (anonymous role has no read access to these PII tables).
+      const citizenId = crypto.randomUUID();
+      const responseId = crypto.randomUUID();
+      const responseCode = "VA2047-" + Math.floor(100000 + Math.random() * 900000);
+
       // 1. Insert citizen
-      const { data: citizen, error: cErr } = await supabase
+      const { error: cErr } = await supabase
         .from("citizens")
         .insert({
+          id: citizenId,
           name: draft.profile.name,
           mobile: draft.profile.mobile,
           age: parseInt(draft.profile.age, 10),
           gender: draft.profile.gender,
           district: draft.profile.district,
           profession: draft.profile.profession,
-        })
-        .select()
-        .single();
+        });
       if (cErr) throw cErr;
 
       // 2. Insert response (unique by survey_id + mobile)
-      const responseCode = "VA2047-" + Math.floor(100000 + Math.random() * 900000);
-      const { data: response, error: rErr } = await supabase
+      const { error: rErr } = await supabase
         .from("survey_responses")
         .insert({
+          id: responseId,
           survey_id: SURVEY_ID,
-          citizen_id: citizen.id,
+          citizen_id: citizenId,
           mobile: draft.profile.mobile,
           selected_language: lang,
           response_code: responseCode,
           idempotency_key: genIdempotencyKey(draft.profile),
-        })
-        .select()
-        .single();
+        });
       if (rErr) {
         if (rErr.code === "23505") {
           toast.error("This mobile number has already submitted a response.");
@@ -107,7 +110,7 @@ function ReviewPage() {
       const rows = questions.map((q) => {
         const a = draft.answers[q.id] || {};
         return {
-          response_id: response.id,
+          response_id: responseId,
           question_id: q.id,
           selected_option_id: a.selectedOptionId || null,
           rating_value: a.rating || null,
